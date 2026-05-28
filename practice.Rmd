@@ -5,6 +5,13 @@ date: "2026-05-18"
 # おためし作業用
 ---
 
+# source
+```{r}
+source("preparation.R")
+```
+
+
+
 # パッケージ読み込み
 ```{r}
 library(tidyverse)
@@ -16,6 +23,7 @@ library(purrr)
 
 ## データ読み込み
 ```{r}
+df_id_name <- read_excel("data/data_id_name.xlsx")
 dw1 <- read_excel("data/data_shichigawahama_w1.xlsx")
 dw2 <- read_excel("data/data_shichigawahama_w2.xlsx")
 dw3 <- read_excel("data/data_shichigawahama_w3.xlsx")
@@ -25,6 +33,7 @@ dw4 <- read_excel("data/data_shichigawahama_w4.xlsx")
 
 ## 重複IDがないかチェック
 ```{r}
+df_id_name |> count(id) |> filter(n > 1)
 dw1 |> count(id) |> filter(n > 1)
 dw2 |> count(id) |> filter(n > 1)
 dw3 |> count(id) |> filter(n > 1)
@@ -32,9 +41,10 @@ dw4 |> count(id) |> filter(n > 1)
 ```
 ## idをキーにしてデータ結合
 ```{r}
-df <- list(dw1, dw2, dw3, dw4) |> 
+df <- list(df_id_name, dw1, dw2, dw3, dw4) |> 
   reduce(full_join, by = "id")
 
-data.frame(df$id, df$name_w1, df$name_w2, df$name_w3, df$name_w4)
+df
+
 ```
 

@@ -1,0 +1,52 @@
+---
+title: "GT"
+format: html
+editor: visual
+# 単純集計
+---
+
+# source
+```{r}
+source("preparation.R")
+```
+
+# 回答者数
+```{r}
+data.frame(
+  "wave1_n" = df$wave1 |> sum(na.rm = TRUE),
+  "wave2_n" = df$wave2 |> sum(na.rm = TRUE),
+  "wave3_n" = df$wave3 |> sum(na.rm = TRUE),
+  "wave4_n" = df$wave4 |> sum(na.rm = TRUE)
+)
+
+```
+各回アンケートの回答者数はそれほど変わらない。だいたい170前後。ただし、毎回同じ人が回答しているわけではない。
+
+
+# 地区district
+
+## wave1の地区別回答者数
+```{r}
+df |> 
+  filter(!is.na(district_w1)) |> 
+  ggplot(aes(x = district_w1)) + 
+  geom_bar()
+```
+## wave2の地区別回答者数
+
+(address_w2から新たにつくろう)
+
+## wave3の地区別回答者数
+```{r}
+df |> 
+  filter(!is.na(district_w3)) |> 
+  ggplot(aes(x = district_w3)) + 
+  geom_bar()
+```
+## wave4の地区別回答者数
+```{r}
+df |> 
+  filter(!is.na(district_w4)) |> 
+  ggplot(aes(x = district_w4)) + 
+  geom_bar()
+```
