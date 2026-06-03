@@ -44,7 +44,7 @@ data.frame(
   - 幸田論文もそのまとめ方
 - ただ、手持ちのデータは農地の住所ではなく居住地の住所だ。だから御林を除く8つの地区で分類しておこう（district_w1の区分に従う）。
 
-## wave1の地区別回答者数
+## wave1
 
 ```{r}
 district_order_w1 <- c(
@@ -59,11 +59,11 @@ df |>
   geom_bar()
 ```
 
-## wave2の地区別回答者数
+## wave2
 
 (address_w2から新たにつくろう)
 
-## wave3の地区別回答者数
+## wave3
 
 ```{r}
 district_order_w3 <- c(
@@ -80,7 +80,7 @@ df |>
   geom_bar()
 ```
 
-## wave4の地区別回答者数
+## wave4
 
 - wave4は地区名ではなく集落名が入っている（地区と集落の関係は町史をチェックしよう）。
 - 集落単位だと回答者が5名以下というパターンが結構ある。地区単位で分析した方がいいと思う。
@@ -91,3 +91,315 @@ df |>
   ggplot(aes(y = district_w4)) + 
   geom_bar()
 ```
+
+# 営農意向farming intention
+
+## wave1
+
+```{r}
+df |> filter(!is.na(v1_farming_intention_w1)) |> 
+  ggplot(aes(x = v1_farming_intention_w1)) +
+  geom_bar()
+```
+
+意外にも初回の調査時は営農再開するという人が多数派。
+
+## wave2
+
+```{r}
+df |> filter(v9_farming_intention_w2 != 6 & v9_farming_intention_w2 != 9 & !is.na(v9_farming_intention_w2)) |> 
+  count(v9_farming_intention_w2) |> 
+  ggplot(aes(x = v9_farming_intention_w2, y = n)) +
+  geom_col()
+
+
+```
+
+この段階でも「やめたい」は少数派だ。
+
+
+## wave3
+
+```{r}
+df |> filter(!is.na(v19_farming_intention_w3)) |> 
+  count(v19_farming_intention_w3) |> 
+  ggplot(aes(x = v19_farming_intention_w3, y = n)) +
+  geom_col()
+```
+
+急に「やめたい」が多数派になっている。ただし、wave3では現状維持の選択肢が2パターンあって、これらを足すとやはり現状維持が多数派だ。震災から1年以上経った時点でいまだに意向が定まっていない（ただし、waveごとの回答者は一定していないので、個人単位での推移をみる必要がある）
+
+
+## wave4
+
+```{r}
+
+df <- df %>%
+  mutate(
+    v35_farming_intention_w4 = case_when(
+      v35_farming_intention_expansion_w4 == 1 ~ "経営拡大する",
+      v35_farming_intention_maintain_status_quo_w4 == 1 ~ "現状維持",
+      v35_farming_intention_reduction_w4 == 1 ~ "経営縮小する",
+      v35_farming_intention_quit_w4 == 1 ~ "農業をやめたい",
+      v35_farming_intention_lend_w4 == 1 ~ "農地を貸したい",
+      v35_farming_intention_sell_w4 == 1 ~ "農地を売却したい",
+      TRUE ~ NA_character_
+    )
+  )
+
+df <- df %>%
+  mutate(
+    v35_farming_intention_w4 = factor(
+      v35_farming_intention_w4,
+      levels = c(
+        "経営拡大する",
+        "現状維持",
+        "経営縮小する",
+        "農業をやめたい",
+        "農地を貸したい",
+        "農地を売却したい"
+      )
+    )
+  )
+
+df %>%
+  filter(!is.na(v35_farming_intention_w4)) |> 
+  count(v35_farming_intention_w4) |> 
+  ggplot(aes(x = v35_farming_intention_w4, y = n)) +
+  geom_col()
+```
+
+これも意味的におかしな選択肢だ。農地を貸したい・売却したい人たちは、農業をやめたい人たちなのか、そうではないのかがわからない。
+
+「農業をやめたい」の枠の中で、農地を貸したい・売却したい、という人がいる可能性もある。一方で、「経営縮小する」の枠の中で、農地を貸したい・売却したい、という人がいる可能性もある。
+
+これらを判別するために、質問3で「復旧した農地を自分で耕作する」を選択した人だけに限定して回答傾向を見てみよう。
+
+```{r}
+df <- df %>%
+  mutate(
+    v35_farming_intention_w4 = case_when(
+      v35_farming_intention_expansion_w4 == 1 ~ "経営拡大する",
+      v35_farming_intention_maintain_status_quo_w4 == 1 ~ "現状維持",
+      v35_farming_intention_reduction_w4 == 1 ~ "経営縮小する",
+      v35_farming_intention_quit_w4 == 1 ~ "農業をやめたい",
+      v35_farming_intention_lend_w4 == 1 ~ "農地を貸したい",
+      v35_farming_intention_sell_w4 == 1 ~ "農地を売却したい",
+      TRUE ~ NA_character_
+    )
+  )
+
+df <- df %>%
+  mutate(
+    v35_farming_intention_w4 = factor(
+      v35_farming_intention_w4,
+      levels = c(
+        "経営拡大する",
+        "現状維持",
+        "経営縮小する",
+        "農業をやめたい",
+        "農地を貸したい",
+        "農地を売却したい"
+      )
+    )
+  )
+
+df %>%
+  filter(!is.na(v35_farming_intention_w4) & v33_farmland_intention_myself_w4 == 1) |> 
+  count(v35_farming_intention_w4) |> 
+  ggplot(aes(x = v35_farming_intention_w4, y = n)) +
+  geom_col()
+```
+
+「経営拡大する」と「経営縮小する」の度数はあまり変わらないけど、「現状維持」の度数は半分くらいに減る。
+
+つまり、「復旧した農地を自分で耕作する」と考えておらず、農地を委託しようと考えている人の中で、「現状維持」と回答した人が20人弱くらいいるということだ。
+
+やっぱりよくわからない。今回、「迷っている」という選択肢がなくなっているから、それが「貸したい」「売却したい」に流れ込んでいる可能性はある。また、「やめたい」の一部が「貸したい」「売却したい」に流れ込んでいる可能性もある。
+→　wave4の営農意向はwave1-3とは別物と考えた方が安全。
+
+
+## 推移_wave1-wave2
+
+```{r}
+df |> 
+  filter(!is.na(v1_farming_intention_w1) & !is.na(v9_farming_intention_w2)) |> 
+  count(v1_farming_intention_w1, v9_farming_intention_w2,
+        sort = TRUE)
+```
+w1-w2で、「する」から「やめたい」「迷っている」に変化した人が結構多い。
+
+
+## 推移_wave1-wave3
+
+```{r}
+df |> 
+  filter(!is.na(v1_farming_intention_w1) & !is.na(v19_farming_intention_w3)) |> 
+  count(v1_farming_intention_w1, v19_farming_intention_w3,
+        sort = TRUE)
+```
+
+## 推移simple_wave1-wave3
+
+```{r}
+df |>
+  filter(!is.na(v1_farming_intention_w1) & !is.na(v19_farming_intention_w3)) |> 
+  mutate(
+    w1_simple = case_when(
+      v1_farming_intention_w1 == "する" ~ "継続",
+      v1_farming_intention_w1 == "しない" ~ "離農",
+      v1_farming_intention_w1 == "わからない" ~ "迷い",
+      TRUE ~ NA_character_
+    ),
+    w3_simple = case_when(
+      v19_farming_intention_w3 %in%
+        c("規模拡大", "現状維持", "現状維持（貸してる）", "規模縮小") ~ "継続",
+      v19_farming_intention_w3 == "やめたい" ~ "離農",
+      v19_farming_intention_w3 == "迷っている" ~ "迷い",
+      TRUE ~ NA_character_
+    )
+  ) |>
+  count(w1_simple, w3_simple, sort = TRUE)
+```
+- w1-w3で「継続」から「迷い」「離農」に変化したパターンが多い。「迷い」のままの人も多いな。
+- ただ、「迷い」から「継続」「離農」に変化した人もそれなりにいる。
+
+
+
+## 推移_wave2-wave3
+
+```{r}
+df |> 
+  filter(!is.na(v9_farming_intention_w2) & !is.na(v19_farming_intention_w3)) |> 
+  count(v9_farming_intention_w2, v19_farming_intention_w3,
+        sort = TRUE)
+```
+
+w2-w3の変化は比較的小さい。2011年の時点で営農移行のシフトはだいたい完了したのではないか。
+（ただ、農地貸借や組織営農に関する考えがどう変化するかも見た方がいいだろう）
+
+## 推移_wave1-wave2-wave3
+
+```{r}
+df |> 
+  filter(!is.na(v1_farming_intention_w1) & !is.na(v9_farming_intention_w2) & !is.na(v19_farming_intention_w3)) |> 
+  count(v1_farming_intention_w1, v9_farming_intention_w2, v19_farming_intention_w3, 
+        sort = TRUE)
+```
+
+
+# 営農形態farming_type
+
+## wave1
+
+```{r}
+df |> 
+  filter(!is.na(v2_farming_type_w1)) |> 
+  count(v2_farming_type_w1)
+```
+
+## wave2
+
+```{r}
+df <- df |> 
+  mutate(
+    v10_farming_type_w2 = case_when(
+      v10_farming_type_w2_individual_farm == 1 ~ "個人経営",
+      v10_farming_type_w2_group_farming == 1 ~ "集落営農",
+      v10_farming_type_w2_corporate_farming == 1 ~ "法人",
+      v10_farming_type_w2_dont_know == 1 ~ "わからない",
+      TRUE ~ NA_character_
+    )
+  ) 
+
+df |> 
+  filter(!is.na(v10_farming_type_w2)) |> 
+  count(v10_farming_type_w2)
+```
+「わからない」が大幅に減ったというよりも、NAの中に「わからない」が含まれていると考えた方がいいのでは。
+
+
+## wave3
+
+```{r}
+df <- df |> 
+  mutate(
+    v20_farming_type_w3 = 
+      recode(v20_farming_continuation_management_type,
+             "1" = "家族経営",
+             "2" = "農業生産法人",
+             "3" = "集落営農組織",
+             "4" = "その他"
+             )
+  )
+
+df |> 
+  filter(!is.na(v20_farming_type_w3)) |> 
+  count(v20_farming_type_w3)
+```
+## wave4
+
+```{r}
+df <- df |> 
+  mutate(
+    v36_farming_type_w4 = case_when(
+      v36_farming_type_corporate_w4 == 1 ~ "町内営農組織",
+      v36_farming_type_individual_farm_w4 == 1 ~ "個別経営",
+      TRUE ~ NA_character_
+    ) 
+  )
+
+df |> 
+  filter(!is.na(v36_farming_type_w4)) |> 
+  count(v36_farming_type_w4)
+```
+## 推移 w1-w2
+
+```{r}
+df |> 
+  filter(!is.na(v2_farming_type_w1) & !is.na(v10_farming_type_w2)) |> 
+  count(v2_farming_type_w1, v10_farming_type_w2,
+        sort = TRUE)
+```
+
+w1-w2ではあまり変化がみられない。
+
+## 推移 w2-w3
+
+```{r}
+df |> 
+  filter(!is.na(v10_farming_type_w2) & !is.na(v20_farming_type_w3)) |> 
+  count(v10_farming_type_w2, v20_farming_type_w3,
+        sort = TRUE)
+```
+w2-w3で変化あり。個人経営から集落営農組織や農業生産法人にシフトする人がみられる（ただし、回答者自体が少ないことに注意）。
+
+
+## 推移 w3-w4
+
+```{r}
+df |> filter(!is.na(v20_farming_type_w3) & !is.na(v36_farming_type_w4)) |> 
+  count(v20_farming_type_w3, v36_farming_type_w4, 
+        sort = TRUE)
+```
+
+w3-w4だとあまり変化はみられなくなる。
+
+## 推移 w1-w4
+
+```{r}
+df |> filter(!is.na(v2_farming_type_w1) & !is.na(v36_farming_type_w4)) |> 
+  count(v2_farming_type_w1, v36_farming_type_w4,
+        sort = TRUE)
+```
+
+## 推移 w2-w4
+
+```{r}
+df |> filter(!is.na(v10_farming_type_w2) & !is.na(v36_farming_type_corporate_w4)) |> 
+  count(v10_farming_type_w2, v36_farming_type_w4,
+        sort = TRUE)
+```
+全員が町内営農組織にシフトしているけれど、これは「W2の営農形態設問とW4の営農形態設問の両方に回答した人が、たまたま組織志向の人に偏っていた」ということだろう。
+
+
