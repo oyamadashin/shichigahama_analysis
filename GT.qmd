@@ -44,7 +44,7 @@ data.frame(
   - 幸田論文もそのまとめ方
 - ただ、手持ちのデータは農地の住所ではなく居住地の住所だ。だから御林を除く8つの地区で分類しておこう（district_w1の区分に従う）。
 
-## wave1
+## w1
 
 ```{r}
 district_order_w1 <- c(
@@ -59,11 +59,11 @@ df |>
   geom_bar()
 ```
 
-## wave2
+## w2
 
 (address_w2から新たにつくろう)
 
-## wave3
+## w3
 
 ```{r}
 district_order_w3 <- c(
@@ -80,9 +80,9 @@ df |>
   geom_bar()
 ```
 
-## wave4
+## w4
 
-- wave4は地区名ではなく集落名が入っている（地区と集落の関係は町史をチェックしよう）。
+- w4は地区名ではなく集落名が入っている（地区と集落の関係は町史をチェックしよう）。
 - 集落単位だと回答者が5名以下というパターンが結構ある。地区単位で分析した方がいいと思う。
 
 ```{r}
@@ -94,7 +94,7 @@ df |>
 
 # 営農意向farming intention
 
-## wave1
+## w1
 
 ```{r}
 df |> filter(!is.na(v1_farming_intention_w1)) |> 
@@ -104,7 +104,7 @@ df |> filter(!is.na(v1_farming_intention_w1)) |>
 
 意外にも初回の調査時は営農再開するという人が多数派。
 
-## wave2
+## w2
 
 ```{r}
 df |> filter(v9_farming_intention_w2 != 6 & v9_farming_intention_w2 != 9 & !is.na(v9_farming_intention_w2)) |> 
@@ -118,7 +118,7 @@ df |> filter(v9_farming_intention_w2 != 6 & v9_farming_intention_w2 != 9 & !is.n
 この段階でも「やめたい」は少数派だ。
 
 
-## wave3
+## w3
 
 ```{r}
 df |> filter(!is.na(v19_farming_intention_w3)) |> 
@@ -127,10 +127,10 @@ df |> filter(!is.na(v19_farming_intention_w3)) |>
   geom_col()
 ```
 
-急に「やめたい」が多数派になっている。ただし、wave3では現状維持の選択肢が2パターンあって、これらを足すとやはり現状維持が多数派だ。震災から1年以上経った時点でいまだに意向が定まっていない（ただし、waveごとの回答者は一定していないので、個人単位での推移をみる必要がある）
+急に「やめたい」が多数派になっている。ただし、w3では現状維持の選択肢が2パターンあって、これらを足すとやはり現状維持が多数派だ。震災から1年以上経った時点でいまだに意向が定まっていない（ただし、wごとの回答者は一定していないので、個人単位での推移をみる必要がある）
 
 
-## wave4
+## w4
 
 ```{r}
 
@@ -216,10 +216,10 @@ df %>%
 つまり、「復旧した農地を自分で耕作する」と考えておらず、農地を委託しようと考えている人の中で、「現状維持」と回答した人が20人弱くらいいるということだ。
 
 やっぱりよくわからない。今回、「迷っている」という選択肢がなくなっているから、それが「貸したい」「売却したい」に流れ込んでいる可能性はある。また、「やめたい」の一部が「貸したい」「売却したい」に流れ込んでいる可能性もある。
-→　wave4の営農意向はwave1-3とは別物と考えた方が安全。
+→　w4の営農意向はw1-3とは別物と考えた方が安全。
 
 
-## 推移_wave1-wave2
+## 推移_w1-w2
 
 ```{r}
 df |> 
@@ -230,7 +230,7 @@ df |>
 w1-w2で、「する」から「やめたい」「迷っている」に変化した人が結構多い。
 
 
-## 推移_wave1-wave3
+## 推移_w1-w3
 
 ```{r}
 df |> 
@@ -239,7 +239,7 @@ df |>
         sort = TRUE)
 ```
 
-## 推移simple_wave1-wave3
+### 推移simple_w1-w3
 
 ```{r}
 df |>
@@ -266,7 +266,7 @@ df |>
 
 
 
-## 推移_wave2-wave3
+## 推移_w2-w3
 
 ```{r}
 df |> 
@@ -278,7 +278,7 @@ df |>
 w2-w3の変化は比較的小さい。2011年の時点で営農移行のシフトはだいたい完了したのではないか。
 （ただ、農地貸借や組織営農に関する考えがどう変化するかも見た方がいいだろう）
 
-## 推移_wave1-wave2-wave3
+## 推移_w1-w2-w3
 
 ```{r}
 df |> 
@@ -290,7 +290,7 @@ df |>
 
 # 営農形態farming_type
 
-## wave1
+## w1
 
 ```{r}
 df |> 
@@ -298,7 +298,7 @@ df |>
   count(v2_farming_type_w1)
 ```
 
-## wave2
+## w2
 
 ```{r}
 df <- df |> 
@@ -319,7 +319,7 @@ df |>
 「わからない」が大幅に減ったというよりも、NAの中に「わからない」が含まれていると考えた方がいいのでは。
 
 
-## wave3
+## w3
 
 ```{r}
 df <- df |> 
@@ -337,7 +337,7 @@ df |>
   filter(!is.na(v20_farming_type_w3)) |> 
   count(v20_farming_type_w3)
 ```
-## wave4
+## w4
 
 ```{r}
 df <- df |> 
@@ -403,3 +403,85 @@ df |> filter(!is.na(v10_farming_type_w2) & !is.na(v36_farming_type_corporate_w4)
 全員が町内営農組織にシフトしているけれど、これは「W2の営農形態設問とW4の営農形態設問の両方に回答した人が、たまたま組織志向の人に偏っていた」ということだろう。
 
 
+# 機械の状況
+
+## w1 
+
+
+### 使用不能機械種類数
+```{r}
+df <- df |> 
+  mutate(
+    across(
+      c(v3_rice_transplanter,
+        v3_tractor,
+        v3_combine_harvester, 
+        v3_crop_harvester, 
+        v3_grain_dryer),
+      ~ case_when(
+      . == "使用可" ~ 0,
+      . == "使用不能" ~ 1,
+      TRUE ~ NA_real_
+    )
+    )
+  ) 
+
+machine_vars <- c(
+  "v3_rice_transplanter",
+  "v3_tractor",
+  "v3_combine_harvester", 
+  "v3_crop_harvester", 
+  "v3_grain_dryer"
+)
+
+df <- df |>
+  mutate(
+    v3_machine_loss_number_w1 = if_else(
+      if_all(all_of(machine_vars), is.na),
+      NA_real_,
+      rowSums(pick(all_of(machine_vars)), na.rm = TRUE)
+    )
+  )
+
+
+
+
+df$v3_machine_loss_number_w1 |> table() 
+
+```
+- あくまでここからわかるのは使用不能機械の種類数。トラクターが2台使用不能になった、といったことはわからない。
+- この使用可の方は回答者数が少ないので、使用不能機械の方を変数化した。
+
+
+### 使用不能種類数×営農意向w1
+```{r}
+table(
+  df$v3_machine_loss_number_w1,
+  df$v1_farming_intention_w1
+) |> as.data.frame.matrix()
+```
+
+- 使用不能ゼロだと営農するという人が多いけれど、使用不能機械が多くても営農するという人は結構いる。
+- ただ、使用不能機械が多い人は、もともと大規模農家であり、経済的に余力があるという可能性もあるだろう。
+
+### 使用不能種類数×経営規模w2
+
+```{r}
+table(
+  df$v3_machine_loss_number_w1,
+  df$v5_previous_farmed_land_area
+)
+```
+
+たしかに使用不能機械が多いと農家規模が大きい傾向はみられるが、そこまできれいな傾向はみられない。
+
+
+### 使用不能種類数×営農形態希望
+```{r}
+table(
+  df$v3_machine_loss_number_w1,
+  df$v2_farming_type_w1
+) |> as.data.frame.matrix()
+```
+
+機械損傷がなければ個人営農だが、損傷が1台以上あると個人営農という人は減る。一方、集落営農は機械損傷の傾向に関係なく一定するいる。
