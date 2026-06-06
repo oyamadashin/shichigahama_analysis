@@ -12,11 +12,12 @@ source("preparation.R")
 
 
 
-# パッケージ読み込み
+
 ```{r}
-library(tidyverse)
-library(readxl)
-library(purrr)
+
+table(df$district_w2, df$member)
+table(df$v9_farming_intention_w2, df$member)
+
 ```
 
 # データ結合練習

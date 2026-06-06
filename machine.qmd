@@ -1,0 +1,48 @@
+---
+title: "machine"
+format: html
+editor: visual
+# 機械関連の変数を集中的に分析
+---
+
+# source
+
+```{r}
+source("preparation.R")
+```
+
+# 営農意向との関連
+## 使用不能種類数×営農意向w1
+
+```{r}
+table(
+  df$v3_machine_loss_number_w1,
+  df$v1_farming_intention_w1
+) |> as.data.frame.matrix()
+```
+
+- 使用不能ゼロだと営農するという人が多いけれど、使用不能機械が多くても営農するという人は結構いる。
+- ただ、使用不能機械が多い人は、もともと大規模農家であり、経済的に余力があるという可能性もあるだろう。
+
+### 使用不能種類数×経営規模w2
+
+```{r}
+table(
+  df$v3_machine_loss_number_w1[df$v5_previous_farmed_land_area != 9],
+  df$v5_previous_farmed_land_area[df$v5_previous_farmed_land_area != 9]
+)
+# v5_previous_farmed_land_area = 9は無回答なので、取り除いておく。
+```
+
+たしかに使用不能機械が多いと農家規模が大きい傾向はみられるが、そこまできれいな傾向はみられない。
+
+
+### 使用不能種類数×営農形態希望
+```{r}
+table(
+  df$v3_machine_loss_number_w1,
+  df$v2_farming_type_w1
+) |> as.data.frame.matrix()
+```
+
+機械損傷がなければ個人営農だが、損傷が1台以上あると個人営農という人は減る。一方、集落営農は機械損傷の傾向に関係なく一定して存在する。

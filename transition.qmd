@@ -1,0 +1,128 @@
+---
+title: "transition"
+format: html
+editor: visual
+# w1-w4の間での回答の推移を検討する
+---
+
+# source
+
+```{r}
+source("preparation.R")
+```
+
+# 営農意向
+
+## 推移_w1-w2
+
+```{r}
+df |> 
+  filter(!is.na(v1_farming_intention_w1) & !is.na(v9_farming_intention_w2)) |> 
+  count(v1_farming_intention_w1, v9_farming_intention_w2,
+        sort = TRUE)
+```
+w1-w2で、「する」から「やめたい」「迷っている」に変化した人が結構多い。
+
+
+## 推移_w1-w3
+
+```{r}
+df |> 
+  filter(!is.na(v1_farming_intention_w1) & !is.na(v19_farming_intention_w3)) |> 
+  count(v1_farming_intention_w1, v19_farming_intention_w3,
+        sort = TRUE)
+```
+
+### 推移simple_w1-w3
+
+```{r}
+df |>
+  filter(!is.na(v1_farming_intention_w1) & !is.na(v19_farming_intention_w3)) |> 
+  mutate(
+    w1_simple = case_when(
+      v1_farming_intention_w1 == "する" ~ "継続",
+      v1_farming_intention_w1 == "しない" ~ "離農",
+      v1_farming_intention_w1 == "わからない" ~ "迷い",
+      TRUE ~ NA_character_
+    ),
+    w3_simple = case_when(
+      v19_farming_intention_w3 %in%
+        c("規模拡大", "現状維持", "現状維持（貸してる）", "規模縮小") ~ "継続",
+      v19_farming_intention_w3 == "やめたい" ~ "離農",
+      v19_farming_intention_w3 == "迷っている" ~ "迷い",
+      TRUE ~ NA_character_
+    )
+  ) |>
+  count(w1_simple, w3_simple, sort = TRUE)
+```
+- w1-w3で「継続」から「迷い」「離農」に変化したパターンが多い。「迷い」のままの人も多いな。
+- ただ、「迷い」から「継続」「離農」に変化した人もそれなりにいる。
+
+
+
+## 推移_w2-w3
+
+```{r}
+df |> 
+  filter(!is.na(v9_farming_intention_w2) & !is.na(v19_farming_intention_w3)) |> 
+  count(v9_farming_intention_w2, v19_farming_intention_w3,
+        sort = TRUE)
+```
+
+w2-w3の変化は比較的小さい。2011年の時点で営農移行のシフトはだいたい完了したのではないか。
+（ただ、農地貸借や組織営農に関する考えがどう変化するかも見た方がいいだろう）
+
+## 推移_w1-w2-w3
+
+```{r}
+df |> 
+  filter(!is.na(v1_farming_intention_w1) & !is.na(v9_farming_intention_w2) & !is.na(v19_farming_intention_w3)) |> 
+  count(v1_farming_intention_w1, v9_farming_intention_w2, v19_farming_intention_w3, 
+        sort = TRUE)
+```
+
+# 営農形態意向
+
+## 推移 w1-w2
+
+(w2は複数回答になってしまっているので、w1からの変化を直接みることはできない。)
+
+
+
+## 推移 w1-w3
+
+```{r}
+df |> 
+  filter(v1_farming_intention_w1 == "する" & !is.na(v2_farming_type_w1) & !is.na(v20_farming_type_w3)) |> 
+  count(v2_farming_type_w1, v20_farming_type_w3,
+        sort = TRUE)
+```
+w1とw4を比較できるように、filter()でw1の時点で営農意向のある人を抽出。
+家族経営にシフトした人は少数派で、「家族経営」の人はw1の段階で「家族経営（個人）」から動いていないようにみえる。
+
+## 推移 w3-w4
+
+```{r}
+df |> filter(!is.na(v20_farming_type_w3) & !is.na(v36_farming_type_w4)) |> 
+  count(v20_farming_type_w3, v36_farming_type_w4, 
+        sort = TRUE)
+```
+
+w3とw4はいずれも営農再開希望の人だけに聞いた質問なので単純に比較してOK。
+w3-w4だとあまり変化はみられなくなる。
+
+
+## 推移 w1-w4
+
+```{r}
+df |> filter(v1_farming_intention_w1 == "する" & !is.na(v2_farming_type_w1) & !is.na(v36_farming_type_w4)) |> 
+  count(v2_farming_type_w1, v36_farming_type_w4,
+        sort = TRUE)
+
+```
+
+w1とw4を比較できるように、filter()でw1の時点で営農意向のある人を抽出。
+個別経営にシフトした人は少数派で、「個別経営」の人はw1の段階で「個別経営（個人）」から動いていないようにみえる。
+
+
+

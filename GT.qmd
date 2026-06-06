@@ -117,7 +117,6 @@ df |> filter(v9_farming_intention_w2 != 6 & v9_farming_intention_w2 != 9 & !is.n
 
 この段階でも「やめたい」は少数派だ。
 
-
 ## w3
 
 ```{r}
@@ -129,39 +128,9 @@ df |> filter(!is.na(v19_farming_intention_w3)) |>
 
 急に「やめたい」が多数派になっている。ただし、w3では現状維持の選択肢が2パターンあって、これらを足すとやはり現状維持が多数派だ。震災から1年以上経った時点でいまだに意向が定まっていない（ただし、wごとの回答者は一定していないので、個人単位での推移をみる必要がある）
 
-
 ## w4
 
 ```{r}
-
-df <- df %>%
-  mutate(
-    v35_farming_intention_w4 = case_when(
-      v35_farming_intention_expansion_w4 == 1 ~ "経営拡大する",
-      v35_farming_intention_maintain_status_quo_w4 == 1 ~ "現状維持",
-      v35_farming_intention_reduction_w4 == 1 ~ "経営縮小する",
-      v35_farming_intention_quit_w4 == 1 ~ "農業をやめたい",
-      v35_farming_intention_lend_w4 == 1 ~ "農地を貸したい",
-      v35_farming_intention_sell_w4 == 1 ~ "農地を売却したい",
-      TRUE ~ NA_character_
-    )
-  )
-
-df <- df %>%
-  mutate(
-    v35_farming_intention_w4 = factor(
-      v35_farming_intention_w4,
-      levels = c(
-        "経営拡大する",
-        "現状維持",
-        "経営縮小する",
-        "農業をやめたい",
-        "農地を貸したい",
-        "農地を売却したい"
-      )
-    )
-  )
-
 df %>%
   filter(!is.na(v35_farming_intention_w4)) |> 
   count(v35_farming_intention_w4) |> 
@@ -176,34 +145,6 @@ df %>%
 これらを判別するために、質問3で「復旧した農地を自分で耕作する」を選択した人だけに限定して回答傾向を見てみよう。
 
 ```{r}
-df <- df %>%
-  mutate(
-    v35_farming_intention_w4 = case_when(
-      v35_farming_intention_expansion_w4 == 1 ~ "経営拡大する",
-      v35_farming_intention_maintain_status_quo_w4 == 1 ~ "現状維持",
-      v35_farming_intention_reduction_w4 == 1 ~ "経営縮小する",
-      v35_farming_intention_quit_w4 == 1 ~ "農業をやめたい",
-      v35_farming_intention_lend_w4 == 1 ~ "農地を貸したい",
-      v35_farming_intention_sell_w4 == 1 ~ "農地を売却したい",
-      TRUE ~ NA_character_
-    )
-  )
-
-df <- df %>%
-  mutate(
-    v35_farming_intention_w4 = factor(
-      v35_farming_intention_w4,
-      levels = c(
-        "経営拡大する",
-        "現状維持",
-        "経営縮小する",
-        "農業をやめたい",
-        "農地を貸したい",
-        "農地を売却したい"
-      )
-    )
-  )
-
 df %>%
   filter(!is.na(v35_farming_intention_w4) & v33_farmland_intention_myself_w4 == 1) |> 
   count(v35_farming_intention_w4) |> 
@@ -215,80 +156,9 @@ df %>%
 
 つまり、「復旧した農地を自分で耕作する」と考えておらず、農地を委託しようと考えている人の中で、「現状維持」と回答した人が20人弱くらいいるということだ。
 
-やっぱりよくわからない。今回、「迷っている」という選択肢がなくなっているから、それが「貸したい」「売却したい」に流れ込んでいる可能性はある。また、「やめたい」の一部が「貸したい」「売却したい」に流れ込んでいる可能性もある。
-→　w4の営農意向はw1-3とは別物と考えた方が安全。
+やっぱりよくわからない。今回、「迷っている」という選択肢がなくなっているから、それが「貸したい」「売却したい」に流れ込んでいる可能性はある。また、「やめたい」の一部が「貸したい」「売却したい」に流れ込んでいる可能性もある。 →　w4の営農意向はw1-3とは別物と考えた方が安全。
 
-
-## 推移_w1-w2
-
-```{r}
-df |> 
-  filter(!is.na(v1_farming_intention_w1) & !is.na(v9_farming_intention_w2)) |> 
-  count(v1_farming_intention_w1, v9_farming_intention_w2,
-        sort = TRUE)
-```
-w1-w2で、「する」から「やめたい」「迷っている」に変化した人が結構多い。
-
-
-## 推移_w1-w3
-
-```{r}
-df |> 
-  filter(!is.na(v1_farming_intention_w1) & !is.na(v19_farming_intention_w3)) |> 
-  count(v1_farming_intention_w1, v19_farming_intention_w3,
-        sort = TRUE)
-```
-
-### 推移simple_w1-w3
-
-```{r}
-df |>
-  filter(!is.na(v1_farming_intention_w1) & !is.na(v19_farming_intention_w3)) |> 
-  mutate(
-    w1_simple = case_when(
-      v1_farming_intention_w1 == "する" ~ "継続",
-      v1_farming_intention_w1 == "しない" ~ "離農",
-      v1_farming_intention_w1 == "わからない" ~ "迷い",
-      TRUE ~ NA_character_
-    ),
-    w3_simple = case_when(
-      v19_farming_intention_w3 %in%
-        c("規模拡大", "現状維持", "現状維持（貸してる）", "規模縮小") ~ "継続",
-      v19_farming_intention_w3 == "やめたい" ~ "離農",
-      v19_farming_intention_w3 == "迷っている" ~ "迷い",
-      TRUE ~ NA_character_
-    )
-  ) |>
-  count(w1_simple, w3_simple, sort = TRUE)
-```
-- w1-w3で「継続」から「迷い」「離農」に変化したパターンが多い。「迷い」のままの人も多いな。
-- ただ、「迷い」から「継続」「離農」に変化した人もそれなりにいる。
-
-
-
-## 推移_w2-w3
-
-```{r}
-df |> 
-  filter(!is.na(v9_farming_intention_w2) & !is.na(v19_farming_intention_w3)) |> 
-  count(v9_farming_intention_w2, v19_farming_intention_w3,
-        sort = TRUE)
-```
-
-w2-w3の変化は比較的小さい。2011年の時点で営農移行のシフトはだいたい完了したのではないか。
-（ただ、農地貸借や組織営農に関する考えがどう変化するかも見た方がいいだろう）
-
-## 推移_w1-w2-w3
-
-```{r}
-df |> 
-  filter(!is.na(v1_farming_intention_w1) & !is.na(v9_farming_intention_w2) & !is.na(v19_farming_intention_w3)) |> 
-  count(v1_farming_intention_w1, v9_farming_intention_w2, v19_farming_intention_w3, 
-        sort = TRUE)
-```
-
-
-# 営農形態farming_type
+# 営農形態意向farming_type
 
 ## w1
 
@@ -301,187 +171,69 @@ df |>
 ## w2
 
 ```{r}
-df <- df |> 
-  mutate(
-    v10_farming_type_w2 = case_when(
-      v10_farming_type_w2_individual_farm == 1 ~ "個人経営",
-      v10_farming_type_w2_group_farming == 1 ~ "集落営農",
-      v10_farming_type_w2_corporate_farming == 1 ~ "法人",
-      v10_farming_type_w2_dont_know == 1 ~ "わからない",
-      TRUE ~ NA_character_
-    )
+v10_sum <- df |> 
+  summarise(
+    across(
+      c(v10_farming_type_w2_individual_farm,
+        v10_farming_type_w2_group_farming,
+        v10_farming_type_w2_corporate_farming,
+        v10_farming_type_w2_dont_know),
+      ~sum(.x, na.rm = TRUE)
+      )
   ) 
 
-df |> 
-  filter(!is.na(v10_farming_type_w2)) |> 
-  count(v10_farming_type_w2)
+names(v10_sum) <- c("個人経営", "集落営農", "共同経営・法人", "わからない")
+v10_sum
 ```
-「わからない」が大幅に減ったというよりも、NAの中に「わからない」が含まれていると考えた方がいいのでは。
 
+ここは複数回答なので、単一の変数にしないでそのまま扱う。
+
+この質問は、営農を続ける意思のある人だけに聞いている。だから、w1に比べ「わからない」が大幅に減ったというよりも、営農を続ける意思も含めて「わからない」という人がここでカウントされていないだけだろう。そう考えると、w1-w2で営農形態意向はの全体傾向大きく変わっていないように思う（個人ごとの変化は別の話）。
 
 ## w3
 
 ```{r}
-df <- df |> 
-  mutate(
-    v20_farming_type_w3 = 
-      recode(v20_farming_continuation_management_type,
-             "1" = "家族経営",
-             "2" = "農業生産法人",
-             "3" = "集落営農組織",
-             "4" = "その他"
-             )
-  )
-
 df |> 
   filter(!is.na(v20_farming_type_w3)) |> 
   count(v20_farming_type_w3)
 ```
+
 ## w4
 
 ```{r}
-df <- df |> 
-  mutate(
-    v36_farming_type_w4 = case_when(
-      v36_farming_type_corporate_w4 == 1 ~ "町内営農組織",
-      v36_farming_type_individual_farm_w4 == 1 ~ "個別経営",
-      TRUE ~ NA_character_
-    ) 
-  )
-
 df |> 
   filter(!is.na(v36_farming_type_w4)) |> 
   count(v36_farming_type_w4)
 ```
-## 推移 w1-w2
-
-```{r}
-df |> 
-  filter(!is.na(v2_farming_type_w1) & !is.na(v10_farming_type_w2)) |> 
-  count(v2_farming_type_w1, v10_farming_type_w2,
-        sort = TRUE)
-```
-
-w1-w2ではあまり変化がみられない。
-
-## 推移 w2-w3
-
-```{r}
-df |> 
-  filter(!is.na(v10_farming_type_w2) & !is.na(v20_farming_type_w3)) |> 
-  count(v10_farming_type_w2, v20_farming_type_w3,
-        sort = TRUE)
-```
-w2-w3で変化あり。個人経営から集落営農組織や農業生産法人にシフトする人がみられる（ただし、回答者自体が少ないことに注意）。
-
-
-## 推移 w3-w4
-
-```{r}
-df |> filter(!is.na(v20_farming_type_w3) & !is.na(v36_farming_type_w4)) |> 
-  count(v20_farming_type_w3, v36_farming_type_w4, 
-        sort = TRUE)
-```
-
-w3-w4だとあまり変化はみられなくなる。
-
-## 推移 w1-w4
-
-```{r}
-df |> filter(!is.na(v2_farming_type_w1) & !is.na(v36_farming_type_w4)) |> 
-  count(v2_farming_type_w1, v36_farming_type_w4,
-        sort = TRUE)
-```
-
-## 推移 w2-w4
-
-```{r}
-df |> filter(!is.na(v10_farming_type_w2) & !is.na(v36_farming_type_corporate_w4)) |> 
-  count(v10_farming_type_w2, v36_farming_type_w4,
-        sort = TRUE)
-```
-全員が町内営農組織にシフトしているけれど、これは「W2の営農形態設問とW4の営農形態設問の両方に回答した人が、たまたま組織志向の人に偏っていた」ということだろう。
-
 
 # 機械の状況
 
-## w1 
-
+## w1
 
 ### 使用不能機械種類数
+
 ```{r}
-df <- df |> 
-  mutate(
-    across(
-      c(v3_rice_transplanter,
-        v3_tractor,
-        v3_combine_harvester, 
-        v3_crop_harvester, 
-        v3_grain_dryer),
-      ~ case_when(
-      . == "使用可" ~ 0,
-      . == "使用不能" ~ 1,
-      TRUE ~ NA_real_
-    )
-    )
-  ) 
-
-machine_vars <- c(
-  "v3_rice_transplanter",
-  "v3_tractor",
-  "v3_combine_harvester", 
-  "v3_crop_harvester", 
-  "v3_grain_dryer"
-)
-
-df <- df |>
-  mutate(
-    v3_machine_loss_number_w1 = if_else(
-      if_all(all_of(machine_vars), is.na),
-      NA_real_,
-      rowSums(pick(all_of(machine_vars)), na.rm = TRUE)
-    )
-  )
-
-
-
-
-df$v3_machine_loss_number_w1 |> table() 
-
+df$v3_machine_loss_number_w1 |> table() |> data.frame() |> 
+  rename(
+    使用不能機械種類数 = Var1,
+    度数 = Freq)
 ```
+
 - あくまでここからわかるのは使用不能機械の種類数。トラクターが2台使用不能になった、といったことはわからない。
-- この使用可の方は回答者数が少ないので、使用不能機械の方を変数化した。
+- 「使用可」は回答者数が少ないので、使用不能機械の方を変数化した。
 
+## w2
 
-### 使用不能種類数×営農意向w1
-```{r}
-table(
-  df$v3_machine_loss_number_w1,
-  df$v1_farming_intention_w1
-) |> as.data.frame.matrix()
-```
-
-- 使用不能ゼロだと営農するという人が多いけれど、使用不能機械が多くても営農するという人は結構いる。
-- ただ、使用不能機械が多い人は、もともと大規模農家であり、経済的に余力があるという可能性もあるだろう。
-
-### 使用不能種類数×経営規模w2
+### 施設・農機具の被災有無
 
 ```{r}
-table(
-  df$v3_machine_loss_number_w1,
-  df$v5_previous_farmed_land_area
-)
+df$v7_machinery_damage_status |> table()
 ```
+意外と「被災なし」が多い。これは町側の集計結果と同じだ。
 
-たしかに使用不能機械が多いと農家規模が大きい傾向はみられるが、そこまできれいな傾向はみられない。
-
-
-### 使用不能種類数×営農形態希望
 ```{r}
-table(
-  df$v3_machine_loss_number_w1,
-  df$v2_farming_type_w1
-) |> as.data.frame.matrix()
+table(df$district_w2, df$v7_machinery_damage_status)
 ```
 
-機械損傷がなければ個人営農だが、損傷が1台以上あると個人営農という人は減る。一方、集落営農は機械損傷の傾向に関係なく一定するいる。
+地区ごとのちがい。結構、地区によって施設・農機具の被災状況にちがいがある（浸水状況にはこうした差はみられない）
+
