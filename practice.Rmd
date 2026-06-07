@@ -11,6 +11,56 @@ source("preparation.R")
 ```
 
 
+```{r}
+table(
+  df$district_w3, 
+  df$v19_farming_intention_w3
+) |> 
+  as.data.frame.matrix()
+```
+
+
+```{r}
+table(
+  df$district_w3,
+  df$v20_farming_type_w3
+) |> 
+  as.data.frame.matrix()
+```
+
+
+```{r}
+table(
+  df$v30_machine_loss_number_w3,
+  df$v20_farming_type_w3
+) |> 
+  as.data.frame.matrix()
+```
+
+```{r}
+table(
+  df$v31_machine_available_number_w3,
+  df$v20_farming_type_w3
+) |> 
+  as.data.frame.matrix()
+```
+
+```{r}
+df |>
+  group_by(district_w3) |>
+  summarise(
+    loss_mean =
+      mean(v30_machine_loss_number_w3, na.rm = TRUE),
+    n_loss =
+      sum(!is.na(v30_machine_loss_number_w3)),
+    available_mean =
+      mean(v31_machine_available_number_w3, na.rm = TRUE),
+    n_available =
+      sum(!is.na(v31_machine_available_number_w3))
+  )
+```
+
+
 
 
 ```{r}

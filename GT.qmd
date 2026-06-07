@@ -229,6 +229,7 @@ df$v3_machine_loss_number_w1 |> table() |> data.frame() |>
 ```{r}
 df$v7_machinery_damage_status |> table()
 ```
+
 意外と「被災なし」が多い。これは町側の集計結果と同じだ。
 
 ```{r}
@@ -236,4 +237,34 @@ table(df$district_w2, df$v7_machinery_damage_status)
 ```
 
 地区ごとのちがい。結構、地区によって施設・農機具の被災状況にちがいがある（浸水状況にはこうした差はみられない）
+
+
+## w3
+
+### 損失主要機械台数
+```{r}
+df$v30_machine_loss_number_w3 |> table()
+```
+
+### 残存主要機械台数
+```{r}
+df$v31_machine_available_number_w3 |> table()
+```
+
+```{r}
+df |>
+  filter(
+    !is.na(v30_machine_loss_number_w3)|
+    !is.na(v31_machine_available_number_w3)
+  ) |>
+  select(
+    district_w3,
+    v30_machine_loss_number_w3,
+    v31_machine_available_number_w3
+  )
+```
+地区による損失・残存状況のちがい。松ヶ浜や吉田浜、東宮浜は被害が小さく、菖蒲田浜、代ヶ崎浜は被害が甚大であることがわかる。
+このあたりから多賀城や仙台市など、町外の回答者も混じってくるので注意。
+
+（w4は機械関連の質問なし）
 

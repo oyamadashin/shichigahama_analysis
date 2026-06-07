@@ -180,7 +180,7 @@ df <- df |>
     )
   ) 
 
-machine_vars <- c(
+v3_machine_vars <- c(
   "v3_rice_transplanter",
   "v3_tractor",
   "v3_combine_harvester", 
@@ -191,9 +191,9 @@ machine_vars <- c(
 df <- df |>
   mutate(
     v3_machine_loss_number_w1 = if_else(
-      if_all(all_of(machine_vars), is.na),
+      if_all(all_of(v3_machine_vars), is.na),
       NA_real_,
-      rowSums(pick(all_of(machine_vars)), na.rm = TRUE)
+      rowSums(pick(all_of(v3_machine_vars)), na.rm = TRUE)
     )
   )
 
@@ -209,4 +209,60 @@ df <- df |>
       "9" = NA_character_,
       .default = NA_character_
     )
+  )
+
+
+## 機械被害状況w3----
+
+### 損失状況w3----
+
+# 第1回アンケートに合わせて主要機械のみ損失台数をカウント。田植え機は乗用と歩行用それぞれの台数をカウントしている。
+v30_machine_vars_damaged =
+  c("v30_ride_on_rice_transplanter_damaged",
+    "v30_walk_rice_transplanter_damaged",
+    "v30_tractor_damaged",
+    "v30_combine_harvester_damaged",
+    "v30_crop_harvester_damaged",
+    "v30_grain_dryer_damaged"
+  )
+
+df <- df |> 
+  mutate(
+    v30_machine_loss_number_w3 =
+      if_else(
+        if_all(all_of(v30_machine_vars_damaged), is.na),
+        NA_real_,
+        rowSums(pick(all_of(v30_machine_vars_damaged)), na.rm = TRUE)
+      )
+  ) |> 
+  mutate(
+    v30_machine_loss_number_w3 =
+      na_if(v30_machine_loss_number_w3, 0)
+    # 町アンケートでは、損失した機械に1がついたら、それ以外の機械には0がつけられている。しかしそれは実態としては未記入なだけなので、0をつけるべきではない。それをここではNAに戻している。
+  )
+
+### 残存状況w3----
+
+v31_machine_vars_available =
+  c("v31_ride_on_rice_transplanter_available",
+    "v31_walk_rice_transplanter_available",
+    "v31_tractor_available",
+    "v31_combine_harvester_available",
+    "v31_crop_harvester_available",
+    "v31_grain_dryer_available"
+  )
+
+df <- df |> 
+  mutate(
+    v31_machine_available_number_w3 =
+      if_else(
+        if_all(all_of(v31_machine_vars_available), is.na),
+        NA_real_,
+        rowSums(pick(all_of(v31_machine_vars_available)), na.rm = TRUE)
+      )
+  ) |> 
+  mutate(
+    v31_machine_available_number_w3 =
+      na_if(v31_machine_available_number_w3, 0)
+    # 町アンケートでは、残存機械に1がついたら、それ以外の機械には0がつけられている。しかしそれは実態としては未記入なだけなので、0をつけるべきではない。それをここではNAに戻している。
   )
