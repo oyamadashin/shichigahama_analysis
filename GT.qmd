@@ -268,3 +268,35 @@ df |>
 
 （w4は機械関連の質問なし）
 
+
+# 後継者  
+
+(w1は後継者関連の質問無し)
+
+
+## w2
+
+```{r}
+df$v15_successor_w2 |> table()
+```
+
+3分の1くらいの回答者には後継者がいる。
+
+```{r}
+table(df$district_w2, df$v15_successor_w2)
+```
+
+松ヶ浜は後継者にも恵まれている（機械の損失が少ないということだけでなく）
+
+## w3
+
+```{r}
+df$v17_successor_w3 |> table()
+```
+
+3分の1くらいの回答者には後継者がいる。
+
+```{r}
+table(df$district_w3, df$v17_successor_w3)
+```
+

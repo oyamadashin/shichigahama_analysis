@@ -11,6 +11,33 @@ source("preparation.R")
 ```
 
 
+
+
+```{r}
+table(df$v9_farming_intention_w2,
+      df$v15_successor_w2) 
+```
+```{r}
+table(df$v19_farming_intention_w3,
+      df$v17_successor_w3)
+```
+
+```{r}
+prop.table(
+  table(df$v15_successor_w2,
+        df$v9_farming_intention_w2),
+  margin = 1
+)
+```
+
+```{r}
+table(
+  df$v7_machinery_damage_status,
+  df$v15_successor_w2
+)
+```
+
+
 ```{r}
 table(
   df$district_w3, 

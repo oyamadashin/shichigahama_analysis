@@ -143,10 +143,10 @@ df <- df |>
   mutate(
     v20_farming_type_w3 = 
       recode(v20_farming_continuation_management_type,
-             "1" = "家族経営",
-             "2" = "農業生産法人",
-             "3" = "集落営農組織",
-             "4" = "その他"
+             `1` = "家族経営",
+             `2` = "農業生産法人",
+             `3` = "集落営農組織",
+             `4` = "その他"
       )
   )
 
@@ -204,9 +204,9 @@ df <- df |>
   mutate(
     v7_machinery_damage_status = recode(
       v7_machinery_damage_status,
-      "1" = "被災なし",
-      "2" = "被災あり",
-      "9" = NA_character_,
+      `1` = "被災なし",
+      `2`= "被災あり",
+      `9` = NA_character_,
       .default = NA_character_
     )
   )
@@ -266,3 +266,25 @@ df <- df |>
       na_if(v31_machine_available_number_w3, 0)
     # 町アンケートでは、残存機械に1がついたら、それ以外の機械には0がつけられている。しかしそれは実態としては未記入なだけなので、0をつけるべきではない。それをここではNAに戻している。
   )
+
+## 後継者w2----
+df <- df |> mutate(
+  v15_successor_w2 = recode(
+    v15_successor_w2, 
+    `1` = "いる",
+    `2` = "いない",
+    `9` = NA_character_,
+    .default = NA_character_
+  )
+)
+
+
+## 後継者w3----
+df <- df |> mutate(
+  v17_successor_w3 = recode(
+    v17_successor_w3, 
+    `1` = "いる",
+    `2` = "いない",
+    .default = NA_character_
+  )
+)
