@@ -17,6 +17,7 @@ source("preparation.R")
 table(df$v9_farming_intention_w2,
       df$v15_successor_w2) 
 ```
+
 ```{r}
 table(df$v19_farming_intention_w3,
       df$v17_successor_w3)
@@ -29,6 +30,82 @@ prop.table(
   margin = 1
 )
 ```
+```{r}
+table(df$v17_successor_w3,
+      df$v20_farming_type_w3) 
+```
+
+```{r}
+table(
+  df$v32_successor_w4, 
+  df$v36_farming_type_w4
+)
+```
+
+```{r}
+df <- df |> 
+  mutate(
+    v10_farming_type_w2 =
+      case_when(
+        v10_farming_type_w2_individual_farm == 1 ~ "個人経営",
+        v10_farming_type_w2_group_farming == 1 ~ "集落営農",
+        v10_farming_type_w2_corporate_farming == 1 ~ "法人",
+        v10_farming_type_w2_dont_know == 1 ~ "わからない",
+        v10_farming_type_w2_other == 1  ~ "その他",
+        TRUE ~ NA_character_
+      )
+  ) |> 
+  mutate(
+    v10_farming_type_w2 =
+      factor(v10_farming_type_w2,
+             levels = c("個人経営", "集落営農", "法人", "わからない", "その他"))
+  )
+
+
+
+```
+
+
+
+
+```{r}
+df <- df |> 
+  mutate(
+    v20_farming_continuation_management_type = recode(
+      v20_farming_continuation_management_type,
+      `1` = "家族経営",
+      `2` = "農業生産法人",
+      `3` = "集落営農組織",
+      `4` = "その他",
+      .default = NA_character_
+    )
+    )
+```
+
+
+```{r}
+df$v32_successor_yes_w4 == 1
+
+
+df <- df |> 
+  mutate(
+    v32_successor_w4 =
+      case_when(
+        df$v32_successor_yes_w4 == 1 ~ "いる",
+        df$v32_successor_no_w4 == 1 ~ "いない",
+        df$v32_successor_dontknow_w4 == 1 ~ "わからない",
+        TRUE ~ NA_character_
+      )
+  ) |> 
+  mutate(
+    v32_successor_w4 =
+      factor(v32_successor_w4,
+             levels = c("いる", "いない", "わからない"))
+  )
+
+df$v32_successor_w4 |> table()
+```
+
 
 ```{r}
 table(

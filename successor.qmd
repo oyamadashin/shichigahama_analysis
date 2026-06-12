@@ -1,0 +1,133 @@
+---
+title: "successor"
+format: html
+editor: visual
+# 後継者関連のeda
+---
+
+# source
+
+```{r}
+source("preparation.R")
+```
+
+# 営農意向との関連
+
+## w2
+
+```{r}
+table(df$v9_farming_intention_w2,
+      df$v15_successor_w2) 
+```
+
+後継者がいない方が、「やめたい」「迷っている」が多い。
+
+
+```{r}
+table(df$v9_farming_intention_w2,
+      df$v15_successor_w2) |> prop.table(margin = 2) |> round(2)
+```
+
+割合で見ても傾向は明らか。後継者がいない方が、「やめたい」「迷っている」が多い。
+
+
+## w3
+
+```{r}
+table(df$v19_farming_intention_w3,
+      df$v17_successor_w3)
+```
+
+```{r}
+table(df$v19_farming_intention_w3,
+      df$v17_successor_w3) |> prop.table(margin = 2) |> round(2)
+```
+w2の時点と比べると、後継者がいる人が「迷っている」が多めになっている。
+
+
+## w4
+
+```{r}
+table(df$v35_farming_intention_w4,
+      df$v32_successor_w4)
+```
+
+```{r}
+table(df$v35_farming_intention_w4,
+      df$v32_successor_w4) |> prop.table(margin = 2) |> round(2)
+```
+
+- w4になると、後継者がいる人の中で「経営拡大する」という割合が急に増えていることがわかる。また、後継者がいない人は「やめたい」よりも「貸したい」が多数派になっている（これは、w3の選択して「貸したい」が無かったからではないか。
+- 後継者がいない人で営農継続を選択している人は20％に満たない→後継者の有無が営農継続意向の主要因？（逆に、後継者がいないのに営農継続をしようという人はなんなのか。農地を貸しつつ営農継続したいというパターンもあるのではないか）
+
+# 営農形態意向との関連
+
+
+
+## w2
+
+```{r}
+table(df$v15_successor_w2,
+      df$v10_farming_type_w2_individual_farm)
+```
+
+- v10系は複数回答なので、ひとつの変数にまとめることができない。ひとつずつ見ていくしかない…。
+- この時点では後継者がいなくても個人経営をする、という人が結構いる。
+
+
+```{r}
+table(df$v15_successor_w2,
+      df$v10_farming_type_w2_group_farming)
+```
+後継者の有無で集落営農参加意向に差はない。
+
+```{r}
+table(df$v15_successor_w2,
+      df$v10_farming_type_w2_corporate_farming)
+```
+
+ここもあまり差はない。
+
+```{r}
+table(df$v15_successor_w2,
+      df$v10_farming_type_w2_dont_know)
+```
+
+後継者がいないと、今後の営農形態は「わからない」という人がおおい。
+
+
+## w3
+
+```{r}
+table(df$v17_successor_w3,
+      df$v20_farming_type_w3) 
+```
+
+```{r}
+table(df$v17_successor_w3,
+      df$v20_farming_type_w3) |> prop.table(margin = 1) |> round(2)
+```
+
+後継者がいれば家族経営、いなければ集落営農、という傾向。
+
+
+## w4
+
+
+```{r}
+table(
+  df$v32_successor_w4, 
+  df$v36_farming_type_w4
+)
+```
+
+
+```{r}
+table(
+  df$v32_successor_w4, 
+  df$v36_farming_type_w4
+) |> prop.table(margin = 1) |> round(2)
+```
+
+- 後継者が「いない」「わからない」という人は、営農継続するのなら営農組織を選択する傾向が非常に強い。
+- しかし、後継者が「いる」という人でも、全員が個別経営を選ぶわけではなく、営農組織も同じくらい選択されている。

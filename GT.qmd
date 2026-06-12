@@ -300,3 +300,26 @@ df$v17_successor_w3 |> table()
 table(df$district_w3, df$v17_successor_w3)
 ```
 
+## w4
+
+```{r}
+df$v32_successor_w4 |> table()
+```
+
+「いる」が激減しているようにみえるが、あるいは回答者が大きく変わったということなのか？
+
+ただし、以下のように「いる」→「わからない」に変化したものも多い。w3時点で未回答だった人がw4で「いない」と回答するパターンも多い。
+
+```{r}
+df |> 
+  count(v17_successor_w3, v32_successor_w4)
+```
+
+
+```{r}
+table(df$district_w4, df$v32_successor_w4)
+```
+
+「いる」が多かった松ヶ浜でさえ「いない」が多数派になっている。
+
+

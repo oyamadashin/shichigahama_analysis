@@ -137,6 +137,7 @@ df <- df %>%
   )
 
 
+
 ## 営農形態意向w3----
 # 変数名がわかりにくいので修正。ついでにrecodeもしておく。
 df <- df |> 
@@ -279,6 +280,8 @@ df <- df |> mutate(
 )
 
 
+
+
 ## 後継者w3----
 df <- df |> mutate(
   v17_successor_w3 = recode(
@@ -288,3 +291,21 @@ df <- df |> mutate(
     .default = NA_character_
   )
 )
+
+## 後継者w4----
+df <- df |> 
+  mutate(
+    v32_successor_w4 =
+      case_when(
+        df$v32_successor_yes_w4 == 1 ~ "いる",
+        df$v32_successor_no_w4 == 1 ~ "いない",
+        df$v32_successor_dontknow_w4 == 1 ~ "わからない",
+        TRUE ~ NA_character_
+      )
+  ) |> 
+  mutate(
+    v32_successor_w4 =
+      factor(v32_successor_w4,
+             levels = c("いる", "いない", "わからない"))
+  )
+
